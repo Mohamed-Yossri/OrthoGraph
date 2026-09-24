@@ -4,7 +4,7 @@
 
 [![Research prototype](https://img.shields.io/badge/status-research%20prototype-276d60)](#limitations) [![Python 3.12](https://img.shields.io/badge/python-3.12-blue)](#run-locally) [![Tests](https://github.com/Mohamed-Yossri/OrthoGraph/actions/workflows/tests.yml/badge.svg)](https://github.com/Mohamed-Yossri/OrthoGraph/actions/workflows/tests.yml)
 
-**[Open the project page](https://mohamed-yossri.github.io/OrthoGraph/)** · [Launch the live app](https://7860-01m39j5g89qvbks42gqbbaybkj.cloudspaces.litng.ai/login) · [Detailed implementation notes](orthograph/README.md)
+**[Open the project page](https://mohamed-yossri.github.io/OrthoGraph/)** · [Launch the live app](https://7860-01m39j5g89qvbks42gqbbaybkj.cloudspaces.litng.ai/login) · [Detailed implementation notes](docs/WORKFLOW.md)
 
 The live app runs on a Lightning Studio NVIDIA L4 endpoint that may sleep when idle. The project page is a stable, memorable entry point; it cannot keep the GPU backend awake. Allow a few minutes for a cold start and use only authorized, de-identified images.
 
@@ -45,40 +45,40 @@ The two primary vision branches analyze the **full original OPG**. Tooth identit
 ## Case pipeline
 
 1. **Ingest.** Validate PNG/JPEG type, dimensions, size, and image integrity; normalize to PNG and strip file metadata. Uploaded orientation begins as **unknown**. The app does not automatically mirror images.
-2. **Detect.** Run tooth enumeration and pathology/restoration detection on the full panorama. Run Liodon only when a third-molar candidate or sensitivity option calls for it. Weights are downloaded separately and checked against pinned SHA-256 values in [`assets.json`](orthograph/research/assets.json).
+2. **Detect.** Run tooth enumeration and pathology/restoration detection on the full panorama. Run Liodon only when a third-molar candidate or sensitivity option calls for it. Weights are downloaded separately and checked against pinned SHA-256 values in [`assets.json`](research/assets.json).
 3. **Resolve identity.** Combine each predicted tooth type (1–8) with image side, arch, and user-confirmed orientation. Standard display puts patient right on image left. Missing detections never shift the identities of neighboring teeth. Duplicates and uncertain assignments remain visible.
 4. **Associate.** Match finding candidates to tooth regions using geometry and finding-specific rules. Preserve ambiguous or region-level findings instead of forcing an FDI label. Store detection score separately from association quality.
 5. **Retrieve.** Attach applicable source records from a small Qdrant corpus. References provide context; they do not validate that a model candidate is correct.
 6. **Review.** LangGraph pauses at a persistent human-review interrupt. The reviewer confirms orientation, edits FDI identities, inspects crops, reassigns findings, records notes, and accepts or rejects candidates. The workflow survives a process restart.
 7. **Export.** Produce a 32-slot odontogram, findings with original-image coordinates, source model runs and hashes, reference links, typed evidence edges, review decisions, and an action trace as JSON. Undetected slots are `not_detected`, never presumed healthy or absent.
 
-Code map: [`app.py`](orthograph/app.py) exposes HTTP routes and the GPU queue; [`pipeline.py`](orthograph/pipeline.py) defines the graph; [`vision.py`](orthograph/vision.py) loads and runs checkpoints; [`domain.py`](orthograph/domain.py) handles FDI/association/report logic; [`retrieval.py`](orthograph/retrieval.py), [`storage.py`](orthograph/storage.py), and [`auth.py`](orthograph/auth.py) handle references, cases, and accounts. The interactive UI lives in [`static/`](orthograph/static/). The [`ARCHITECTURE.md`](orthograph/ARCHITECTURE.md) records checkpoint selection and design tradeoffs; parts describe earlier proposals, so the running code is authoritative.
+Code map: [`app.py`](app.py) exposes HTTP routes and the GPU queue; [`pipeline.py`](pipeline.py) defines the graph; [`vision.py`](vision.py) loads and runs checkpoints; [`domain.py`](domain.py) handles FDI/association/report logic; [`retrieval.py`](retrieval.py), [`storage.py`](storage.py), and [`auth.py`](auth.py) handle references, cases, and accounts. The interactive UI lives in [`static/`](static/). The [`ARCHITECTURE.md`](ARCHITECTURE.md) records checkpoint selection and design tradeoffs; parts describe earlier proposals, so the running code is authoritative.
 
 ## Run locally
 
 Use Python 3.12 and install the CUDA PyTorch build appropriate to your machine before the remaining dependencies. The working deployment was tested on a Lightning NVIDIA L4 with PyTorch 2.8.0+cu128.
 
 ```bash
-python -m pip install -r orthograph/requirements.txt
-python -m orthograph.download_assets
+python -m pip install -r requirements.txt
+python download_assets.py
 python main.py
 ```
 
-Open `http://localhost:7860/login`. First launch creates an ignored one-time owner credential in `orthograph/data/initial-login.txt`; sign in as `mohamed-yossri` and replace that password. Other accounts can register without email. Runtime images, SQLite databases, downloaded weights, and the upstream example OPG are excluded from Git. To fetch the upstream example separately for research testing, run `python -m orthograph.download_assets --demo`; its redistribution rights are not established.
+Open `http://localhost:7860/login`. First launch creates an ignored one-time owner credential in `data/initial-login.txt`; sign in as `mohamed-yossri` and replace that password. Other accounts can register without email. Runtime images, SQLite databases, downloaded weights, and the upstream example OPG are excluded from Git. To fetch the upstream example separately for research testing, run `python download_assets.py --demo`; its redistribution rights are not established.
 
-The server reads `PORT` (default 7860), `ORTHOGRAPH_HOST` (default `0.0.0.0`), `ORTHOGRAPH_DATA_DIR`, and optional `GEMINI_API_KEY`. The optional cloud crop action asks for explicit consent. See the [configuration and review guide](orthograph/README.md#configuration) for limits and details.
+The server reads `PORT` (default 7860), `ORTHOGRAPH_HOST` (default `0.0.0.0`), `ORTHOGRAPH_DATA_DIR`, and optional `GEMINI_API_KEY`. The optional cloud crop action asks for explicit consent. See the [configuration and review guide](docs/WORKFLOW.md#configuration) for limits and details.
 
 ```bash
-python -m pip install -r orthograph/requirements-ci.txt
-python -m pytest orthograph/tests -q
-python orthograph/verify_assets.py   # requires downloaded weights
+python -m pip install -r requirements-ci.txt
+python -m pytest tests -q
+python verify_assets.py   # requires downloaded weights
 ```
 
 GitHub Actions runs the API/domain suite without a GPU or model files. The service bounds GPU inference to one worker with a four-case queue. This is a single-instance research deployment, not a distributed clinical service.
 
 ## Measured evidence
 
-The included [DENTEX exploratory audit](orthograph/research/dentex_validation.json) ran published checkpoints on 50 validation panoramas. Its matching rules and limitations are documented [here](orthograph/README.md#exploratory-dentex-model-audit).
+The included [DENTEX exploratory audit](research/dentex_validation.json) ran published checkpoints on 50 validation panoramas. Its matching rules and limitations are documented [here](docs/WORKFLOW.md#exploratory-dentex-model-audit).
 
 | Audit observation | Result |
 |---|---:|

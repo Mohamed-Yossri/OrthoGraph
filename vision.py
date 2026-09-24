@@ -5,7 +5,7 @@ import threading
 import time
 from pathlib import Path
 from PIL import Image
-from .domain import Tooth, Finding, LABELS
+from domain import Tooth, Finding, LABELS
 
 ROOT = Path(__file__).resolve().parent
 (ROOT/'.ultralytics').mkdir(exist_ok=True)
@@ -25,7 +25,7 @@ class Vision:
             asset = self.manifest[name]
             path = ROOT/asset['path']
             if not path.exists():
-                raise RuntimeError(f'Missing {name} weights. Run python -m orthograph.download_assets.')
+                raise RuntimeError(f'Missing {name} weights. Run python download_assets.py.')
             if hashlib.sha256(path.read_bytes()).hexdigest() != asset['sha256']:
                 raise RuntimeError(f'{name} checkpoint hash mismatch.')
             self.models[name] = YOLO(str(path))

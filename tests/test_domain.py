@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from orthograph.domain import (Tooth, Finding, Report, ReviewPatch, assign_fdi,
+from domain import (Tooth, Finding, Report, ReviewPatch, assign_fdi,
     associate, rebuild, apply_patch, review_errors, estimate_guides)
 
 

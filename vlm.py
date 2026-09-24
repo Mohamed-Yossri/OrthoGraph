@@ -4,7 +4,7 @@ import io
 import os
 import httpx
 from pydantic import BaseModel, Field, ConfigDict
-from .vision import crop_box
+from vision import crop_box
 
 
 class CropObservation(BaseModel):

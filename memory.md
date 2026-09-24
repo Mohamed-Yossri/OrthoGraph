@@ -4,7 +4,7 @@ Updated: 2026-09-24. Read this with `README.md` and the running code. Keep this 
 
 ## Intent and scope
 
-Build a credible, impressive OPG research workbench that makes model evidence inspectable and human corrections durable. The current application is a research prototype, not a clinically validated diagnostic system. The GitHub repository is the canonical source; the live Lightning Studio currently serves a separate working copy at `/teamspace/studios/this_studio/orthograph`. Sync tested source edits to that copy when updating the live app. Never copy runtime case data, credentials, model weights, or the upstream example image into Git.
+Build a credible, impressive OPG research workbench that makes model evidence inspectable and human corrections durable. The current application is a research prototype, not a clinically validated diagnostic system. The GitHub repository is the canonical source and uses a flat root layout (`app.py`, `pipeline.py`, `static/`, `tests/`, `research/`, `docs/`); the live Lightning Studio currently serves a separate working copy at `/teamspace/studios/this_studio/orthograph`. Sync tested source edits to that copy when updating the live app. Never copy runtime case data, credentials, model weights, or the upstream example image into Git.
 
 ## Current architecture
 
@@ -14,12 +14,16 @@ The service has Argon2 password hashes, revocable sessions, account-isolated cas
 
 ## Verification and gaps
 
-The Python API/domain tests passed 26 checks on Python 3.12. GitHub Actions runs CPU-only tests. A 50-image DENTEX exploratory audit reported 180/182 annotated abnormal tooth boxes localized at IoU ≥ 0.3 and exact FDI for 158/180 localized boxes; YOLO26 caries site hits were 24/133 and Liodon 46/133 with more unmatched boxes. These are site-matching observations, not clinical performance metrics or an independent test. Full definitions are in `orthograph/README.md`; machine-readable results are in `orthograph/research/dentex_validation.json`.
+The Python API/domain tests passed 26 checks on Python 3.12. GitHub Actions runs CPU-only tests. A 50-image DENTEX exploratory audit reported 180/182 annotated abnormal tooth boxes localized at IoU ≥ 0.3 and exact FDI for 158/180 localized boxes; YOLO26 caries site hits were 24/133 and Liodon 46/133 with more unmatched boxes. These are site-matching observations, not clinical performance metrics or an independent test. Full definitions are in `docs/WORKFLOW.md`; machine-readable results are in `research/dentex_validation.json`.
 
 There is no validated lesion segmentation, bone-loss measurement, pulp assessment, periodontal staging, DICOM/PHI pipeline, CBCT support, model training, external clinical validation, or production deployment. Next technical priority: build a source-disjoint expert-labelled evaluation with per-class false positives, tooth/FDI/association metrics, abstention coverage, and reviewer correction burden. Add modules only when their evaluation supports the added complexity.
 
 ## Operations
 
-From repository root: `python -m pip install -r orthograph/requirements.txt`, `python -m orthograph.download_assets`, `python main.py`. Tests: `python -m pytest orthograph/tests -q`. The live app uses Lightning port 7860 and can auto-start after Studio sleep; allow for cold start and available GPU credits. Public project entry point: https://mohamed-yossri.github.io/OrthoGraph/ . Its GitHub Pages page is only a static link to the Lightning backend.
+From repository root: `python -m pip install -r requirements.txt`, `python download_assets.py`, `python main.py`. Tests: `python -m pytest tests -q`. The live app uses Lightning port 7860 and can auto-start after Studio sleep; allow for cold start and available GPU credits. Public project entry point: https://mohamed-yossri.github.io/OrthoGraph/ . Its GitHub Pages page is only a static link to the Lightning backend.
 
 Update this memory after architectural or deployment changes, keeping it safe for a public repository. Do not write secrets, private case details, or security incident details here.
+
+## Repository layout update
+
+The earlier nested `orthograph/` source wrapper was removed at the user's request. Python modules and requirements now live at repository root; tests and static/research assets are root directories. `main.py` imports `app:create_app`. GitHub Actions and all documented run commands use root paths. The live Lightning deployment still runs its separate working copy; this source-only layout change does not alter that deployment. Keep both copies aligned when making behavioral changes.

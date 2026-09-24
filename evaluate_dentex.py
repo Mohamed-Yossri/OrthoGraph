@@ -6,8 +6,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from zipfile import ZipFile
 import requests
-from .vision import Vision
-from .domain import Tooth, Finding, assign_fdi, estimate_guides, center
+from vision import Vision
+from domain import Tooth, Finding, assign_fdi, estimate_guides, center
 
 ROOT=Path(__file__).resolve().parent
 DATA=ROOT/'data/dentex'

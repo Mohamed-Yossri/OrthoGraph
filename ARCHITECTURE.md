@@ -154,13 +154,13 @@ Before a public service, add authenticated case access, bounded uploads, retenti
 
 ## Reproduce the work completed here
 
-From the Studio root:
+From the repository root:
 
 ```bash
-python -m pip install -r orthograph/requirements-verification.txt
-python orthograph/verify_assets.py
+python -m pip install -r requirements-verification.txt
+python verify_assets.py
 ```
 
-Weights are already downloaded in `orthograph/weights/`. Their pinned URLs and hashes are in `research/assets.json`. Running the script needs GPU access outside the restricted agent sandbox; it also supports CPU when CUDA is unavailable. To repeat one model only, use `--models gegesay` (or another manifest model name).
+In the live Studio working copy, weights are already downloaded in `weights/`; a fresh checkout must run `python download_assets.py`. Their pinned URLs and hashes are in `research/assets.json`. Running the script needs GPU access outside the restricted agent sandbox; it also supports CPU when CUDA is unavailable. To repeat one model only, use `--models gegesay` (or another manifest model name).
 
 Installed Ultralytics and dill in the existing Lightning environment because Lightning disallows additional virtual environments. The application was subsequently built and launched; see the repository README for current runtime and tests.

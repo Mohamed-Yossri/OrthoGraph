@@ -2,7 +2,7 @@ import io
 import time
 from PIL import Image
 from fastapi.testclient import TestClient
-from orthograph.app import create_app
+from app import create_app
 
 
 class FakeVision:
@@ -146,13 +146,13 @@ def test_signup_signin_and_case_isolation(tmp_path):
 def test_existing_owner_and_cases_migrate(tmp_path):
     import sqlite3
     from argon2 import PasswordHasher
-    from orthograph.auth import AuthStore
+    from auth import AuthStore
     db = sqlite3.connect(tmp_path/'auth.sqlite3')
     db.execute('CREATE TABLE owner (username TEXT PRIMARY KEY,password_hash TEXT NOT NULL,must_change INTEGER NOT NULL)')
     db.execute('CREATE TABLE sessions (token_hash TEXT PRIMARY KEY,expires INTEGER NOT NULL)')
     db.execute('INSERT INTO owner VALUES (?,?,0)',('mohamed-yossri',PasswordHasher().hash('previous long password')))
     db.commit(); db.close()
-    from orthograph.storage import Store
+    from storage import Store
     old = Store(tmp_path)
     old.create('00000000-0000-4000-8000-000000000001','Old case',{})
     old.close()

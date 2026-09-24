@@ -15,12 +15,12 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageOps, UnidentifiedImageError, ImageStat
 from pydantic import BaseModel, Field
-from .auth import AuthStore, COOKIE, OWNER_USERNAME
-from .domain import Report, ReviewPatch, apply_patch, rebuild, review_errors, now
-from .storage import Store
-from .vision import Vision, crop_box
-from .retrieval import ReferenceIndex
-from .pipeline import Workflow
+from auth import AuthStore, COOKIE, OWNER_USERNAME
+from domain import Report, ReviewPatch, apply_patch, rebuild, review_errors, now
+from storage import Store
+from vision import Vision, crop_box
+from retrieval import ReferenceIndex
+from pipeline import Workflow
 
 ROOT = Path(__file__).resolve().parent
 Image.MAX_IMAGE_PIXELS = 24_000_000
@@ -291,7 +291,7 @@ def create_app(data_dir=None, vision=None, references=None, auth_enabled=True):
                 report.trace.append({'node':'vlm_request','at':now(),'detail':f'User requested Gemini inspection for {finding_id}; crop sent to Google'})
                 report.revision+=1
                 store.update(case_id,report=report.model_dump())
-            from .vlm import inspect_crop
+            from vlm import inspect_crop
             try:
                 observation = inspect_crop(store.directory(case_id)/'image.png',finding)
             except RuntimeError as exc:

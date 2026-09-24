@@ -1,8 +1,8 @@
 import json
 import pytest
 from PIL import Image
-from orthograph.domain import Finding
-from orthograph.vlm import inspect_crop
+from domain import Finding
+from vlm import inspect_crop
 
 
 class MockClient:
@@ -23,7 +23,7 @@ class MockClient:
 
 def test_vlm_validates_output_and_handles_quota(tmp_path,monkeypatch):
     monkeypatch.setenv('GEMINI_API_KEY','test-key')
-    monkeypatch.setattr('orthograph.vlm.httpx.Client',MockClient)
+    monkeypatch.setattr('vlm.httpx.Client',MockClient)
     image=tmp_path/'test.png';Image.new('RGB',(100,100)).save(image)
     f=Finding(id='f',label='filling',title='Filling',category='restoration',raw_label='filling',model='test',bbox=[0,0,50,50],score=.8)
     result=inspect_crop(image,f)

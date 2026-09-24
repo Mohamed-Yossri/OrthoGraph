@@ -1,23 +1,23 @@
-# OrthoGraph
+# Detailed workflow and validation
 
-An interactive research workbench for dental panoramic radiographs. Local vision models produce tooth and finding candidates; an editable odontogram links every observation to its image region, model provenance and applicable reference context.
+OrthoGraph is an interactive research workbench for dental panoramic radiographs. Local vision models produce tooth and finding candidates; an editable odontogram links every observation to its image region, model provenance and applicable reference context.
 
-## Run in this Lightning Studio
+## Run from the repository root
 
-The application is served on **port 7860**. Its Lightning URL is stored in `data/access.json` (not committed). For the first sign-in, read the one-time credential in `data/initial-login.txt` and set your own password on the sign-in page. That file is deleted after setup. Use the **Explore the research example** button to try the full workflow.
+The application is served on **port 7860**. The live Lightning URL is linked from the repository README. For the first sign-in, read the one-time credential in `data/initial-login.txt` and set your own password on the sign-in page. That file is deleted after setup. Use the **Explore the research example** button to try the full workflow.
 
 ```bash
-# From /teamspace/studios/this_studio
+# From the repository root
 python main.py
 ```
 
-The Studio already has CUDA PyTorch and the required checkpoints. For a fresh setup:
+The current Lightning Studio has CUDA PyTorch and the required checkpoints in its live working copy. For a fresh checkout:
 
 ```bash
-python -m pip install -r orthograph/requirements.txt
-python -m orthograph.download_assets
+python -m pip install -r requirements.txt
+python download_assets.py
 # Optional upstream example for local research testing:
-python -m orthograph.download_assets --demo
+python download_assets.py --demo
 python main.py
 ```
 
@@ -53,7 +53,7 @@ The model's 1–8 tooth classes are identities, not detection ranks. A missing i
 |---|---|
 | `PORT` | HTTP port; default `7860` |
 | `ORTHOGRAPH_HOST` | Bind address; default `0.0.0.0` |
-| `ORTHOGRAPH_DATA_DIR` | Case/checkpoint/cache directory; default `orthograph/data` |
+| `ORTHOGRAPH_DATA_DIR` | Case/checkpoint/cache directory; default `data` |
 | `GEMINI_API_KEY` | Enables optional crop inspection |
 | `ORTHOGRAPH_GEMINI_MODEL` | Override the Gemini model for your account |
 | `HF_TOKEN` | Optional for Hugging Face access; detector files are public |
@@ -78,9 +78,9 @@ Each summary has a source URL, publisher, section, review date and content hash.
 ## Tests and reproduction
 
 ```bash
-python -m pip install -r orthograph/requirements-dev.txt
-python -m pytest orthograph/tests -q
-python orthograph/verify_assets.py
+python -m pip install -r requirements-dev.txt
+python -m pytest tests -q
+python verify_assets.py
 ```
 
 Tests cover orientation, missing teeth, duplicate identities, uncertain associations, changed-decision invalidation, input validation, stale edits, checkpoint recovery across restart, finalization, export, deletion, account migration, sign-up and case isolation, and VLM failure handling. GPU smoke tests and browser tests are additional integration checks; they are not clinical accuracy studies.
@@ -89,7 +89,7 @@ Runtime records: `research/verification/report.json`. Browser captures: `researc
 
 ## Exploratory DENTEX model audit
 
-Run `python -m orthograph.evaluate_dentex`. The validation archive is downloaded at a pinned revision, SHA-256 verified, and kept under ignored `data/dentex/`. The 50-image, 182-abnormal-tooth result is in `research/dentex_validation.json` and shown in the app's **Model audit** view.
+Run `python evaluate_dentex.py`. The validation archive is downloaded at a pinned revision, SHA-256 verified, and kept under ignored `data/dentex/`. The 50-image, 182-abnormal-tooth result is in `research/dentex_validation.json` and shown in the app's **Model audit** view.
 
 | Metric | Result |
 |---|---:|
@@ -114,4 +114,4 @@ Weights and the upstream example image are excluded from version control. A publ
 
 This release is a working research prototype, not a clinically validated system. It does not diagnose pulp status, caries depth or periodontal stage. It does not support DICOM, mixed dentition or automatic bone-loss measurement. Tooth geometry can fail with tilted heads, atypical anatomy and missing teeth; the correction workflow is intentional. There is no automatic recognition that an uploaded image is an OPG, so that modality is an input requirement. Fine-grained pathology accuracy and FDI accuracy still require a labelled, source-disjoint evaluation.
 
-A frozen external evaluation, per-class sensitivity/false positives, association accuracy, abstention coverage and reviewer correction burden are the next priorities. See `ARCHITECTURE.md` for the original design rationale. The workspace-root `../memory.md` is the continuation handoff for another AI. Its section describing the application as unimplemented has been superseded by this release.
+A frozen external evaluation, per-class sensitivity/false positives, association accuracy, abstention coverage and reviewer correction burden are the next priorities. See [`ARCHITECTURE.md`](../ARCHITECTURE.md) for the original design rationale. The repository-root [`memory.md`](../memory.md) is the continuation handoff for another AI.

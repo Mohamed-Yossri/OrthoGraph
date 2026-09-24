@@ -1,13 +1,16 @@
+# Runtime and credentials
+data/
 weights/
+.env
 .venv/
 .ultralytics/
 __pycache__/
+*.pyc
+.pytest_cache/
+
+# Downloaded examples and local research artifacts
 research/sample.jpg
 research/verification/*.jpg
-.env
-
-data/
-.pytest_cache/
 research/screenshots/
 research/live_case.json
 research/endpoint.json

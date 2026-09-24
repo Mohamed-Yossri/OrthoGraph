@@ -6,7 +6,7 @@ from PIL import Image
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import interrupt, Command
 from langgraph.checkpoint.sqlite import SqliteSaver
-from .domain import Report, Tooth, Finding, assign_fdi, associate, estimate_guides, rebuild, now, review_errors
+from domain import Report, Tooth, Finding, assign_fdi, associate, estimate_guides, rebuild, now, review_errors
 
 
 class State(TypedDict, total=False):

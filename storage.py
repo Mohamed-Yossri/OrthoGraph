@@ -2,7 +2,7 @@ import json
 import sqlite3
 import threading
 from pathlib import Path
-from .domain import now
+from domain import now
 
 
 class Store:
