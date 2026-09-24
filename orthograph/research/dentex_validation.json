@@ -1,0 +1,1915 @@
+{
+  "dataset": "DENTEX validation (50 OPGs, abnormal tooth annotations)",
+  "dataset_url": "https://huggingface.co/datasets/ibrahimhamamci/DENTEX",
+  "dataset_revision": "7b27ccc8e342dcb774f69adc6ca5e6c09fefce93",
+  "archive_sha256": "6370bb4f1024bd610cde13242a465cb2eff195fc02f56ac22126555e7edc7bc3",
+  "metrics_definition": {
+    "tooth_localization": "One-to-one greedy match of predicted tooth boxes to annotated abnormal tooth boxes, IoU >= 0.3. Healthy teeth have no exhaustive labels here.",
+    "tooth_fdi": "Exact FDI from tooth type plus geometric quadrant among matched abnormal tooth boxes; no manual orientation correction.",
+    "site_hit": "One-to-one class-matched predicted box-center inside annotated whole-tooth box. Caries and deep caries are merged. This is not object-detection mAP.",
+    "thresholds": "Checkpoint-published settings: enumeration 0.25/640; YOLO26 0.348/1280; Liodon 0.45/640.",
+    "limitations": "Small 50-image split, no patient-overlap audit, annotation geometry mismatch, model selection on public data possible, no clinical validation. Liodon was originally selected using DENTEX validation, so these are not independent Liodon performance estimates."
+  },
+  "tooth": {
+    "annotated_abnormal_teeth": 182,
+    "localized_iou_0_3": 180,
+    "exact_fdi_after_localization": 158,
+    "localization_recall": 0.989,
+    "exact_fdi_recall": 0.8681,
+    "conditional_fdi_accuracy": 0.8778
+  },
+  "findings": {
+    "yolo26": {
+      "suspected_caries": {
+        "tp": 24,
+        "fp": 4,
+        "fn": 109,
+        "precision": 0.8571,
+        "recall": 0.1805
+      },
+      "periapical_radiolucency": {
+        "tp": 4,
+        "fp": 1,
+        "fn": 5,
+        "precision": 0.8,
+        "recall": 0.4444
+      }
+    },
+    "liodon": {
+      "impaction_candidate": {
+        "tp": 33,
+        "fp": 11,
+        "fn": 7,
+        "precision": 0.75,
+        "recall": 0.825
+      },
+      "suspected_caries": {
+        "tp": 46,
+        "fp": 37,
+        "fn": 87,
+        "precision": 0.5542,
+        "recall": 0.3459
+      },
+      "periapical_radiolucency": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 7,
+        "precision": 1.0,
+        "recall": 0.2222
+      }
+    }
+  },
+  "per_image": [
+    {
+      "file": "val_15.png",
+      "annotated_abnormal_teeth": 7,
+      "tooth_localized": 7,
+      "fdi_correct": 6,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 2,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_38.png",
+      "annotated_abnormal_teeth": 5,
+      "tooth_localized": 5,
+      "fdi_correct": 1,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          }
+        }
+      }
+    },
+    {
+      "file": "val_33.png",
+      "annotated_abnormal_teeth": 6,
+      "tooth_localized": 6,
+      "fdi_correct": 3,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 5
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_30.png",
+      "annotated_abnormal_teeth": 5,
+      "tooth_localized": 5,
+      "fdi_correct": 5,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1
+          }
+        }
+      }
+    },
+    {
+      "file": "val_5.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 1,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_21.png",
+      "annotated_abnormal_teeth": 6,
+      "tooth_localized": 6,
+      "fdi_correct": 6,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_39.png",
+      "annotated_abnormal_teeth": 1,
+      "tooth_localized": 1,
+      "fdi_correct": 1,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_46.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 1,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_20.png",
+      "annotated_abnormal_teeth": 1,
+      "tooth_localized": 1,
+      "fdi_correct": 1,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_3.png",
+      "annotated_abnormal_teeth": 1,
+      "tooth_localized": 1,
+      "fdi_correct": 1,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_29.png",
+      "annotated_abnormal_teeth": 0,
+      "tooth_localized": 0,
+      "fdi_correct": 0,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_2.png",
+      "annotated_abnormal_teeth": 8,
+      "tooth_localized": 8,
+      "fdi_correct": 8,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 4,
+            "fp": 2,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_16.png",
+      "annotated_abnormal_teeth": 6,
+      "tooth_localized": 6,
+      "fdi_correct": 5,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 4
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 4,
+            "fp": 1,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_25.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_24.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_31.png",
+      "annotated_abnormal_teeth": 9,
+      "tooth_localized": 9,
+      "fdi_correct": 9,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_26.png",
+      "annotated_abnormal_teeth": 0,
+      "tooth_localized": 0,
+      "fdi_correct": 0,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_44.png",
+      "annotated_abnormal_teeth": 4,
+      "tooth_localized": 4,
+      "fdi_correct": 4,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_27.png",
+      "annotated_abnormal_teeth": 8,
+      "tooth_localized": 8,
+      "fdi_correct": 8,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 4
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_41.png",
+      "annotated_abnormal_teeth": 6,
+      "tooth_localized": 6,
+      "fdi_correct": 6,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "suspected_caries": {
+            "tp": 3,
+            "fp": 2,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_37.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 2,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_40.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_6.png",
+      "annotated_abnormal_teeth": 4,
+      "tooth_localized": 4,
+      "fdi_correct": 4,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_18.png",
+      "annotated_abnormal_teeth": 3,
+      "tooth_localized": 3,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          }
+        }
+      }
+    },
+    {
+      "file": "val_13.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 1,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_8.png",
+      "annotated_abnormal_teeth": 4,
+      "tooth_localized": 4,
+      "fdi_correct": 4,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_49.png",
+      "annotated_abnormal_teeth": 3,
+      "tooth_localized": 3,
+      "fdi_correct": 3,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_23.png",
+      "annotated_abnormal_teeth": 0,
+      "tooth_localized": 0,
+      "fdi_correct": 0,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_1.png",
+      "annotated_abnormal_teeth": 7,
+      "tooth_localized": 7,
+      "fdi_correct": 6,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 1
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_43.png",
+      "annotated_abnormal_teeth": 4,
+      "tooth_localized": 4,
+      "fdi_correct": 4,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_28.png",
+      "annotated_abnormal_teeth": 11,
+      "tooth_localized": 10,
+      "fdi_correct": 10,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 4
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          }
+        }
+      }
+    },
+    {
+      "file": "val_19.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          }
+        }
+      }
+    },
+    {
+      "file": "val_14.png",
+      "annotated_abnormal_teeth": 5,
+      "tooth_localized": 4,
+      "fdi_correct": 3,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_32.png",
+      "annotated_abnormal_teeth": 4,
+      "tooth_localized": 4,
+      "fdi_correct": 4,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_36.png",
+      "annotated_abnormal_teeth": 5,
+      "tooth_localized": 5,
+      "fdi_correct": 4,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_47.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 1,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 4,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_48.png",
+      "annotated_abnormal_teeth": 1,
+      "tooth_localized": 1,
+      "fdi_correct": 1,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_17.png",
+      "annotated_abnormal_teeth": 0,
+      "tooth_localized": 0,
+      "fdi_correct": 0,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_42.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_45.png",
+      "annotated_abnormal_teeth": 4,
+      "tooth_localized": 4,
+      "fdi_correct": 4,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 3,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_9.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_4.png",
+      "annotated_abnormal_teeth": 4,
+      "tooth_localized": 4,
+      "fdi_correct": 4,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 4
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_34.png",
+      "annotated_abnormal_teeth": 2,
+      "tooth_localized": 2,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          }
+        }
+      }
+    },
+    {
+      "file": "val_10.png",
+      "annotated_abnormal_teeth": 7,
+      "tooth_localized": 7,
+      "fdi_correct": 5,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 3,
+            "fp": 1,
+            "fn": 4
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_35.png",
+      "annotated_abnormal_teeth": 3,
+      "tooth_localized": 3,
+      "fdi_correct": 3,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_11.png",
+      "annotated_abnormal_teeth": 3,
+      "tooth_localized": 3,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_12.png",
+      "annotated_abnormal_teeth": 3,
+      "tooth_localized": 3,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_7.png",
+      "annotated_abnormal_teeth": 3,
+      "tooth_localized": 3,
+      "fdi_correct": 3,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_22.png",
+      "annotated_abnormal_teeth": 4,
+      "tooth_localized": 4,
+      "fdi_correct": 4,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 3,
+            "fn": 3
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "val_0.png",
+      "annotated_abnormal_teeth": 3,
+      "tooth_localized": 3,
+      "fdi_correct": 2,
+      "findings": {
+        "yolo26": {
+          "suspected_caries": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        },
+        "liodon": {
+          "impaction_candidate": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "suspected_caries": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1
+          },
+          "periapical_radiolucency": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    }
+  ],
+  "annotation_sha256": "d058afd35d2849923c7c045e61fd3e05d231dcf74d55009993fff88bd9b6f5a2"
+}

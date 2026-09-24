@@ -1,0 +1,16 @@
+fastapi==0.141.1
+uvicorn==0.52.4
+python-multipart==0.0.32
+langgraph==1.2.12
+langgraph-checkpoint-sqlite==3.1.1
+qdrant-client==1.19.1
+fastembed==0.8.1
+ultralytics==8.4.161
+opencv-python==4.11.0.86
+dill==0.4.1
+httpx==0.28.1
+pillow==12.3.0
+pydantic==2.13.5
+numpy==1.26.4
+# Use the Studio CUDA build of PyTorch; see README.
+argon2-cffi==25.1.0

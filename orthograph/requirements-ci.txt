@@ -1,0 +1,13 @@
+# Lightweight API/domain tests use fake vision and references; no GPU or model weights.
+fastapi==0.141.1
+python-multipart==0.0.32
+langgraph==1.2.12
+langgraph-checkpoint-sqlite==3.1.1
+qdrant-client==1.19.1
+fastembed==0.8.1
+httpx==0.28.1
+pillow==12.3.0
+pydantic==2.13.5
+numpy==1.26.4
+argon2-cffi==25.1.0
+pytest==9.1.1

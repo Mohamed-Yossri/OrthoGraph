@@ -1,0 +1,107 @@
+{
+  "purpose": "single-image runtime smoke test, not accuracy validation",
+  "torch": "2.8.0+cu128",
+  "ultralytics": "8.4.161",
+  "device": "NVIDIA L4",
+  "models": {
+    "enumeration": {
+      "status": "passed",
+      "task": "detect",
+      "names": {
+        "0": "1",
+        "1": "2",
+        "2": "3",
+        "3": "4",
+        "4": "5",
+        "5": "6",
+        "6": "7",
+        "7": "8"
+      },
+      "imgsz": 640,
+      "conf": 0.25,
+      "detections": 29,
+      "median_warm_predict_ms": 30.634972000143534,
+      "peak_allocated_mb": 152.57763671875,
+      "timing_scope": "5 sequential predictions, batch=1, includes preprocessing and postprocessing; excludes load, warmup and saving"
+    },
+    "liodon": {
+      "status": "passed",
+      "task": "detect",
+      "names": {
+        "0": "caries",
+        "1": "periapical_lesion",
+        "2": "impacted_tooth"
+      },
+      "imgsz": 640,
+      "conf": 0.45,
+      "detections": 3,
+      "median_warm_predict_ms": 22.013442999877952,
+      "peak_allocated_mb": 53.849609375,
+      "timing_scope": "5 sequential predictions, batch=1, includes preprocessing and postprocessing; excludes load, warmup and saving"
+    },
+    "gegesay": {
+      "status": "passed",
+      "task": "segment",
+      "names": {
+        "0": "Caries",
+        "1": "Crown",
+        "2": "Filling",
+        "3": "Implant",
+        "4": "Malaligned",
+        "5": "Mandibular Canal",
+        "6": "Missing teeth",
+        "7": "Periapical lesion",
+        "8": "Retained root",
+        "9": "Root Canal Treatment",
+        "10": "Root Piece",
+        "11": "impacted tooth",
+        "12": "maxillary sinus",
+        "13": "Bone Loss",
+        "14": "Fracture teeth",
+        "15": "Permanent Teeth",
+        "16": "Supra Eruption",
+        "17": "TAD",
+        "18": "abutment",
+        "19": "attrition",
+        "20": "bone defect",
+        "21": "gingival former",
+        "22": "metal band",
+        "23": "orthodontic brackets",
+        "24": "permanent retainer",
+        "25": "post - core",
+        "26": "plating",
+        "27": "wire",
+        "28": "Cyst",
+        "29": "Root resorption",
+        "30": "Primary teeth"
+      },
+      "imgsz": 640,
+      "conf": 0.25,
+      "detections": 5,
+      "median_warm_predict_ms": 24.494019000030676,
+      "peak_allocated_mb": 406.1552734375,
+      "timing_scope": "5 sequential predictions, batch=1, includes preprocessing and postprocessing; excludes load, warmup and saving"
+    },
+    "yolo26": {
+      "status": "passed",
+      "task": "detect",
+      "names": {
+        "0": "Apical Periodontitis",
+        "1": "Decay",
+        "2": "Wisdom Tooth",
+        "3": "Missing Tooth",
+        "4": "Dental Filling",
+        "5": "Root Canal Filling",
+        "6": "Implant",
+        "7": "Porcelain Crown",
+        "8": "Ceramic Bridge"
+      },
+      "imgsz": 1280,
+      "conf": 0.348,
+      "detections": 5,
+      "median_warm_predict_ms": 26.744290000124238,
+      "peak_allocated_mb": 271.0263671875,
+      "timing_scope": "5 sequential predictions, batch=1, includes preprocessing and postprocessing; excludes load, warmup and saving"
+    }
+  }
+}

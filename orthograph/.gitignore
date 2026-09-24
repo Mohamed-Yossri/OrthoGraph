@@ -1,0 +1,15 @@
+weights/
+.venv/
+.ultralytics/
+__pycache__/
+research/sample.jpg
+research/verification/*.jpg
+.env
+
+data/
+.pytest_cache/
+research/screenshots/
+research/live_case.json
+research/endpoint.json
+research/synthetic-connectivity.png
+research/gemini-connectivity.json

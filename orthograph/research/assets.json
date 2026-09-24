@@ -1,0 +1,32 @@
+{
+  "enumeration": {
+    "url": "https://raw.githubusercontent.com/Zhaolin-Yu/OPGAgent/466b59396fa21be0d8d2a86fd35adeabbdfde780/api_service/yolo_enumeration/model/best.pt",
+    "path": "weights/enumeration.pt",
+    "bytes": 51653196,
+    "sha256": "33d4230ea3531503a5e75eb400f5f9bf6545f3b998b495c98c3fddac5337b2c2"
+  },
+  "liodon": {
+    "url": "https://huggingface.co/liodon-ai/dental-panoramic-detector/resolve/8bef2036b099e80e51f93f24de4b0c0edd366256/best.pt",
+    "path": "weights/liodon.pt",
+    "bytes": 5452442,
+    "sha256": "6943ceb0f96109cb1955d0e487a8f20aa8edb8fc9d0186b7ecf682fef9be27aa"
+  },
+  "gegesay": {
+    "url": "https://huggingface.co/gegesay89/dental-findings-yolo-detector/resolve/b891c48926cc2be5a9cc310534773f0e9dbe1988/dental_disease_panoramic_yolov8seg/best.pt",
+    "path": "weights/gegesay.pt",
+    "bytes": 367706701,
+    "sha256": "af14905ab5bb9321e6ca55fa5e22bb66dc206f67d7610b9bbf8f38da8af46433"
+  },
+  "yolo26": {
+    "url": "https://huggingface.co/EuricoGVP/YOLO26_Dental_Detection/resolve/006c1adb1560ce53a78d119a328be98088021ba0/best.pt",
+    "path": "weights/yolo26.pt",
+    "bytes": 44110553,
+    "sha256": "8070505857f354aae4f18bf621b9b79f0e3b48a2904e44f57a2bc598ed692849"
+  },
+  "sample": {
+    "url": "https://raw.githubusercontent.com/Zhaolin-Yu/OPGAgent/466b59396fa21be0d8d2a86fd35adeabbdfde780/api_service/tvem/examples/sample.jpg",
+    "path": "research/sample.jpg",
+    "bytes": 233728,
+    "sha256": "14c8867ccf8a6d9100c5d3a21a58e4b956ce1b29debc0932543d09c824842dab"
+  }
+}

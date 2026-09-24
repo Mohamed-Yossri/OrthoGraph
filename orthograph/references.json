@@ -1,0 +1,62 @@
+[
+  {
+    "id": "ada-caries-assessment",
+    "title": "Caries risk assessment and management",
+    "publisher": "American Dental Association",
+    "section": "Caries detection and diagnosis; ADA Caries Classification System",
+    "url": "https://www.ada.org/resources/ada-library/oral-health-topics/caries-risk-assessment-and-management",
+    "reviewed_at": "2026-09-24",
+    "kind": "curated_summary",
+    "topics": [
+      "suspected_caries"
+    ],
+    "text": "Caries assessment combines clinical findings, radiographic information and patient history. Bitewing radiographs can help detect proximal lesions, with performance depending on lesion stage. A panoramic detector candidate alone does not establish lesion activity, depth, or a patient's caries risk.",
+    "consideration": "Correlate a caries candidate with clinical examination and appropriate diagnostic imaging; lesion activity and depth remain unassessed here."
+  },
+  {
+    "id": "aae-periapical-differential",
+    "title": "Save a Tooth, Maybe Save a Life",
+    "publisher": "American Association of Endodontists",
+    "section": "Radiographic interpretation, pulp testing and differential diagnosis",
+    "url": "https://www.aae.org/specialty/save-a-tooth-maybe-save-a-life/",
+    "reviewed_at": "2026-09-24",
+    "published_at": "2022-01-03",
+    "kind": "curated_summary_of_expert_article",
+    "topics": [
+      "periapical_radiolucency"
+    ],
+    "text": "Periapical radiolucencies can have endodontic and non-endodontic causes. Radiographic appearance alone cannot definitively establish the nature of a lesion. History, clinical examination and pulp testing provide context for a differential diagnosis.",
+    "consideration": "Review a periapical candidate with clinical history, examination and pulp testing; the image alone does not establish pulpal disease."
+  },
+  {
+    "id": "efp-periodontal-staging",
+    "title": "Periodontitis: 2017 World Workshop consensus, published 2018",
+    "publisher": "European Federation of Periodontology",
+    "section": "Table 1A: staging by severity, complexity, extent and distribution",
+    "url": "https://www.efp.org/fileadmin/uploads/efp/Documents/Campaigns/New_Classification/Reports/Consensus_report__Workgroup_2__Papapanou_et_al-2018-Journal_of_Clinical_Periodontology.pdf",
+    "reviewed_at": "2026-09-24",
+    "published_at": "2018",
+    "kind": "curated_summary",
+    "topics": [
+      "bone_loss"
+    ],
+    "text": "Periodontitis staging uses clinical attachment loss, radiographic bone loss, periodontal tooth loss and complexity factors. Clinical attachment loss is the initial basis; radiographic bone loss may be used if it is unavailable. A complete classification requires more information than a panoramic image or a segmentation mask.",
+    "consideration": "Periodontal staging is not provided by OrthoGraph; clinical measurements and case context are required."
+  },
+  {
+    "id": "nice-third-molars",
+    "title": "Guidance on the extraction of wisdom teeth (TA1)",
+    "publisher": "NICE",
+    "section": "Recommendations 1.1\u20131.3 (NHS context)",
+    "url": "https://www.nice.org.uk/guidance/ta1/chapter/1-Recommendations",
+    "reviewed_at": "2026-09-24",
+    "published_at": "2000-03-27",
+    "kind": "curated_summary",
+    "topics": [
+      "third_molar",
+      "impaction_candidate"
+    ],
+    "text": "NICE guidance in the NHS context advises against prophylactic removal of pathology-free impacted third molars and restricts surgery to cases with evidence of pathology. Identifying a third molar on an image does not establish impaction, pathology, or an indication for extraction.",
+    "consideration": "Review eruption status and clinical context. Third-molar detection alone does not justify extraction; NICE TA1 addresses this in the NHS setting."
+  }
+]

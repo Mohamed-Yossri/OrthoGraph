@@ -1,0 +1,4 @@
+ultralytics==8.4.161
+opencv-python==4.11.0.86
+dill==0.4.1
+# Tested with the Studio's existing torch==2.8.0+cu128 and torchvision==0.23.0+cu128.
