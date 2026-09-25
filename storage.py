@@ -19,7 +19,6 @@ class Store:
         columns = {r[1] for r in self.db.execute('PRAGMA table_info(cases)')}
         if 'owner_id' not in columns:
             self.db.execute('ALTER TABLE cases ADD COLUMN owner_id INTEGER NOT NULL DEFAULT 1')
-        self.db.execute('CREATE TABLE IF NOT EXISTS analysis_usage (owner_id INTEGER NOT NULL, created_at TEXT NOT NULL)')
         # A process interruption is visible rather than an indefinitely spinning job.
         self.db.execute("UPDATE cases SET status='error', error='The server restarted during processing. Please analyze the image again.' WHERE status IN ('processing','queued','finalizing')")
         self.db.commit()
@@ -59,17 +58,6 @@ class Store:
             self.db.execute('UPDATE cases SET '+','.join(k+'=?' for k in values)+' WHERE id=?',
                             [*values.values(),case_id])
             self.db.commit()
-
-    def reserve_analysis(self, owner_id, limit=3):
-        from datetime import datetime, timezone
-        day = datetime.now(timezone.utc).date().isoformat()
-        with self.lock:
-            used = self.db.execute('SELECT COUNT(*) FROM analysis_usage WHERE owner_id=? AND created_at LIKE ?', (owner_id, day + '%')).fetchone()[0]
-            if used >= limit:
-                return False
-            self.db.execute('INSERT INTO analysis_usage (owner_id,created_at) VALUES (?,?)', (owner_id, now()))
-            self.db.commit()
-            return True
 
     def directory(self, case_id):
         # IDs are never interpreted as a path from an unvalidated request.

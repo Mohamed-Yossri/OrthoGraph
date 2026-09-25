@@ -219,9 +219,6 @@ def create_app(data_dir=None, vision=None, references=None, auth_enabled=True):
             directory.mkdir(parents=True)
             image.save(directory/'image.png')
             image_hash = hashlib.sha256((directory/'image.png').read_bytes()).hexdigest()
-            if request.state.user['id'] != 1 and not store.reserve_analysis(request.state.user['id']):
-                shutil.rmtree(directory)
-                raise HTTPException(429, 'This demo allows three analyses per account each day.')
             store.create(case_id,Path(name).name[:100],{'orientation':orientation,'impaction':impaction,
                                                        'sensitivity':sensitivity,
                                                        'image_hash':image_hash,'source_mode':source_mode,

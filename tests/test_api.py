@@ -201,10 +201,10 @@ def test_existing_owner_and_cases_migrate(tmp_path):
         assert client.get('/api/cases').json() == []
 
 
-def test_analysis_quota_survives_case_deletion(tmp_path):
+def test_account_can_analyze_more_than_three_cases_in_a_day(tmp_path):
     with TestClient(create_app(tmp_path, FakeVision(), FakeReferences())) as client:
-        assert client.post('/api/register', json={'username':'quotatest','password':'a sufficiently long password'}).status_code == 201
-        for _ in range(3):
+        assert client.post('/api/register', json={'username':'repeatuser','password':'a sufficiently long password'}).status_code == 201
+        for _ in range(4):
             response = client.post('/api/cases', files={'image':('opg.png',image_bytes(),'image/png')})
             assert response.status_code == 202
             cid = response.json()['id']
@@ -212,4 +212,4 @@ def test_analysis_quota_survives_case_deletion(tmp_path):
                 if client.get('/api/cases/'+cid).json()['status']=='awaiting_review': break
                 time.sleep(.01)
             assert client.delete('/api/cases/'+cid).status_code == 200
-        assert client.post('/api/cases', files={'image':('opg.png',image_bytes(),'image/png')}).status_code == 429
+        assert client.get('/api/cases').json() == []

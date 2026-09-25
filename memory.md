@@ -31,3 +31,7 @@ The earlier nested `orthograph/` source wrapper was removed at the user's reques
 ## High-bit-depth upload fix (2026-09-25)
 
 A user-submitted panoramic PNG produced an almost-white saved case image and no detections. The saved image was 99% near-white; its original upload bytes were not retained, so its bit depth cannot be confirmed. Reproduced a likely root cause: direct Pillow `I;16` to RGB conversion clips nearly all 16-bit intensities to white. Upload now percentile-normalizes 16-bit grayscale PNGs to 8-bit before RGB conversion and records source mode/normalization in report image metadata. A separate quality gate rejects images with almost no midtone detail before inference. Added two API tests; suite passed 28 tests. The fix was copied to the separate live source, its process restarted, and public `/login` returned 200. Existing damaged case images cannot be reconstructed from saved 8-bit PNGs; re-upload the original source file.
+
+## Analysis cap removed (2026-09-25)
+
+At the user's request, the three-analyses-per-account-per-day limit was removed. `app.py` no longer calls a usage reservation, `storage.py` no longer creates or writes to the usage table, and the regression test now confirms a registered account can submit four analyses in one day. The existing `analysis_usage` table in old SQLite databases is inert and is not read. The bounded GPU queue remains for concurrency control. Canonical and live-copy test suites passed 28 tests each; live app was restarted and `/login` returned 200.
