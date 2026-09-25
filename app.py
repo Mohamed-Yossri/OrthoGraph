@@ -14,6 +14,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile, Request
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageOps, UnidentifiedImageError, ImageStat
+import numpy as np
 from pydantic import BaseModel, Field
 from auth import AuthStore, COOKIE, OWNER_USERNAME
 from domain import Report, ReviewPatch, apply_patch, rebuild, review_errors, now
@@ -24,6 +25,42 @@ from pipeline import Workflow
 
 ROOT = Path(__file__).resolve().parent
 Image.MAX_IMAGE_PIXELS = 24_000_000
+
+
+def normalize_upload_image(source):
+    """Preserve high-bit-depth radiographic contrast before making an RGB viewer image."""
+    oriented = ImageOps.exif_transpose(source)
+    source_mode = oriented.mode
+    if source_mode in ('I;16', 'I;16B', 'I;16L', 'I', 'F'):
+        pixels = np.asarray(oriented, dtype=np.float32)
+        if not np.isfinite(pixels).all():
+            raise ValueError('The image contains invalid pixel values.')
+        low, high = np.percentile(pixels, (0.5, 99.5))
+        if high <= low:
+            raise ValueError('The image contains too little contrast to analyze.')
+        scaled = np.clip((pixels - low) * (255.0 / (high - low)), 0, 255).astype(np.uint8)
+        image = Image.fromarray(scaled).convert('RGB')
+        normalization = 'percentile_0.5_99.5_to_8bit'
+    else:
+        if source_mode in ('RGBA', 'LA') and oriented.getchannel('A').getextrema()[0] < 255:
+            raise ValueError('Transparent PNGs are not supported. Export the original opaque radiograph.')
+        if source_mode == 'P' and 'transparency' in oriented.info:
+            raise ValueError('Transparent PNGs are not supported. Export the original opaque radiograph.')
+        image = oriented.convert('RGB')
+        normalization = '8bit_rgb'
+    image.load()
+    return image, source_mode, normalization
+
+
+def has_radiographic_detail(image):
+    gray = ImageOps.grayscale(image)
+    gray.thumbnail((256, 128))
+    histogram = gray.histogram()
+    total = sum(histogram)
+    near_white = sum(histogram[250:]) / total
+    near_black = sum(histogram[:6]) / total
+    midtones = sum(histogram[16:240]) / total
+    return not (midtones < 0.02 and max(near_white, near_black) > 0.97)
 
 
 class NewDemo(BaseModel):
@@ -166,14 +203,17 @@ def create_app(data_dir=None, vision=None, references=None, auth_enabled=True):
                 with Image.open(io.BytesIO(raw)) as source:
                     if source.format not in ('PNG','JPEG'):
                         raise ValueError('Use a PNG or JPEG panoramic image.')
-                    image = ImageOps.exif_transpose(source).convert('RGB')
-                    image.load()
-            except (UnidentifiedImageError,OSError,ValueError,Image.DecompressionBombError):
+                    image, source_mode, normalization = normalize_upload_image(source)
+            except ValueError as exc:
+                raise HTTPException(422, str(exc)) from None
+            except (UnidentifiedImageError,OSError,Image.DecompressionBombError):
                 raise HTTPException(422,'Could not read this image. Use a PNG or JPEG under 24 megapixels.') from None
             if image.width<400 or image.height<200:
                 raise HTTPException(422,'Image is too small. Use the original panoramic export (at least 400 × 200).')
             if max(ImageStat.Stat(image).stddev)<3:
                 raise HTTPException(422,'The image contains too little contrast to analyze.')
+            if not has_radiographic_detail(image):
+                raise HTTPException(422,'The image is almost entirely white or black and has too little radiographic detail. Upload the original X-ray export, not a mask or preview.')
             case_id = str(uuid4())
             directory = store.directory(case_id)
             directory.mkdir(parents=True)
@@ -184,7 +224,8 @@ def create_app(data_dir=None, vision=None, references=None, auth_enabled=True):
                 raise HTTPException(429, 'This demo allows three analyses per account each day.')
             store.create(case_id,Path(name).name[:100],{'orientation':orientation,'impaction':impaction,
                                                        'sensitivity':sensitivity,
-                                                       'image_hash':image_hash}, owner_id=request.state.user['id'])
+                                                       'image_hash':image_hash,'source_mode':source_mode,
+                                                       'pixel_normalization':normalization}, owner_id=request.state.user['id'])
             def run():
                 try:
                     workflow.run(case_id)

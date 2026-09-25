@@ -44,7 +44,7 @@ The two primary vision branches analyze the **full original OPG**. Tooth identit
 
 ## Case pipeline
 
-1. **Ingest.** Validate PNG/JPEG type, dimensions, size, and image integrity; normalize to PNG and strip file metadata. Uploaded orientation begins as **unknown**. The app does not automatically mirror images.
+1. **Ingest.** Validate PNG/JPEG type, dimensions, size, image integrity, and usable radiographic detail; map 16-bit grayscale PNG intensity to 8-bit before model inference; normalize to PNG and strip file metadata. Uploaded orientation begins as **unknown**. The app does not automatically mirror images.
 2. **Detect.** Run tooth enumeration and pathology/restoration detection on the full panorama. Run Liodon only when a third-molar candidate or sensitivity option calls for it. Weights are downloaded separately and checked against pinned SHA-256 values in [`assets.json`](research/assets.json).
 3. **Resolve identity.** Combine each predicted tooth type (1–8) with image side, arch, and user-confirmed orientation. Standard display puts patient right on image left. Missing detections never shift the identities of neighboring teeth. Duplicates and uncertain assignments remain visible.
 4. **Associate.** Match finding candidates to tooth regions using geometry and finding-specific rules. Preserve ambiguous or region-level findings instead of forcing an FDI label. Store detection score separately from association quality.

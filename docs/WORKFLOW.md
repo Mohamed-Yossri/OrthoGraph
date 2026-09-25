@@ -25,7 +25,7 @@ Python 3.12, PyTorch 2.8.0+cu128 and torchvision 0.23.0+cu128 were used on NVIDI
 
 ## What works
 
-- PNG/JPEG upload, input limits, contrast validation and metadata-stripped image normalization. An optional sensitivity mode adds Liodon caries/periapical leads, with an explicit increase in expected false alarms.
+- PNG/JPEG upload, input limits, contrast/detail validation and metadata-stripped image normalization. 16-bit grayscale PNGs are scaled to 8-bit before RGB conversion; the source mode and normalization method are recorded in the report. An optional sensitivity mode adds Liodon caries/periapical leads, with an explicit increase in expected false alarms.
 - Full-OPG tooth-type detection (OPGAgent), nine-class findings (YOLO26), and conditional impaction checking (Liodon).
 - Interactive image zoom/pan, selectable regions, contextual crops and 32-slot FDI odontogram.
 - Provisional quadrant assignment using geometry; explicit unknown orientation, duplicate numbering, unassigned teeth and region-level findings.

@@ -14,7 +14,7 @@ The service has Argon2 password hashes, revocable sessions, account-isolated cas
 
 ## Verification and gaps
 
-The Python API/domain tests passed 26 checks on Python 3.12. GitHub Actions runs CPU-only tests. A 50-image DENTEX exploratory audit reported 180/182 annotated abnormal tooth boxes localized at IoU ≥ 0.3 and exact FDI for 158/180 localized boxes; YOLO26 caries site hits were 24/133 and Liodon 46/133 with more unmatched boxes. These are site-matching observations, not clinical performance metrics or an independent test. Full definitions are in `docs/WORKFLOW.md`; machine-readable results are in `research/dentex_validation.json`.
+The Python API/domain tests passed 28 checks on Python 3.12. GitHub Actions runs CPU-only tests. A 50-image DENTEX exploratory audit reported 180/182 annotated abnormal tooth boxes localized at IoU ≥ 0.3 and exact FDI for 158/180 localized boxes; YOLO26 caries site hits were 24/133 and Liodon 46/133 with more unmatched boxes. These are site-matching observations, not clinical performance metrics or an independent test. Full definitions are in `docs/WORKFLOW.md`; machine-readable results are in `research/dentex_validation.json`.
 
 There is no validated lesion segmentation, bone-loss measurement, pulp assessment, periodontal staging, DICOM/PHI pipeline, CBCT support, model training, external clinical validation, or production deployment. Next technical priority: build a source-disjoint expert-labelled evaluation with per-class false positives, tooth/FDI/association metrics, abstention coverage, and reviewer correction burden. Add modules only when their evaluation supports the added complexity.
 
@@ -27,3 +27,7 @@ Update this memory after architectural or deployment changes, keeping it safe fo
 ## Repository layout update
 
 The earlier nested `orthograph/` source wrapper was removed at the user's request. Python modules and requirements now live at repository root; tests and static/research assets are root directories. `main.py` imports `app:create_app`. GitHub Actions and all documented run commands use root paths. The live Lightning deployment still runs its separate working copy; this source-only layout change does not alter that deployment. Keep both copies aligned when making behavioral changes.
+
+## High-bit-depth upload fix (2026-09-25)
+
+A user-submitted panoramic PNG produced an almost-white saved case image and no detections. The saved image was 99% near-white; its original upload bytes were not retained, so its bit depth cannot be confirmed. Reproduced a likely root cause: direct Pillow `I;16` to RGB conversion clips nearly all 16-bit intensities to white. Upload now percentile-normalizes 16-bit grayscale PNGs to 8-bit before RGB conversion and records source mode/normalization in report image metadata. A separate quality gate rejects images with almost no midtone detail before inference. Added two API tests; suite passed 28 tests. The fix was copied to the separate live source, its process restarted, and public `/login` returned 200. Existing damaged case images cannot be reconstructed from saved 8-bit PNGs; re-upload the original source file.

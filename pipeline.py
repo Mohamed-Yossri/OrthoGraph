@@ -79,7 +79,9 @@ class Workflow:
         associate(findings,teeth)
         report = Report(case_id=state['case_id'],created_at=case['created_at'],
                         image={'width':width,'height':height,'sha256':state['options']['image_hash'],
-                               'coordinate_space':'original_normalized_image_pixels','format':'PNG'},
+                               'coordinate_space':'original_normalized_image_pixels','format':'PNG',
+                               'source_mode':state['options'].get('source_mode'),
+                               'pixel_normalization':state['options'].get('pixel_normalization')},
                         orientation=orientation,guides=guides,teeth=teeth,findings=findings,
                         model_runs=state['runs'],trace=self.event(state,'associate','Assigned provisional FDI identities; ambiguous matches stay unresolved'))
         return {'report':rebuild(report).model_dump(), 'trace':report.trace}

@@ -1,5 +1,6 @@
 import io
 import time
+import numpy as np
 from PIL import Image
 from fastapi.testclient import TestClient
 from app import create_app
@@ -69,6 +70,41 @@ def test_upload_and_external_inspection_validation(tmp_path):
         assert client.get('/api/cases/not-a-real-id').status_code==404
         assert client.post('/api/cases/x/inspect/y',json={'consent':False}).status_code==422
         assert client.post('/api/demo',headers={'Sec-Fetch-Site':'cross-site'}).status_code==403
+
+
+def test_16bit_png_is_scaled_before_detection_and_reported(tmp_path):
+    # Pillow's plain I;16 -> RGB conversion clips values above 255 to white.
+    gradient = np.linspace(900, 3500, 800, dtype=np.uint16)[None, :].repeat(400, axis=0)
+    buffer = io.BytesIO()
+    Image.fromarray(gradient).save(buffer, format='PNG')
+    with TestClient(create_app(tmp_path, FakeVision(), FakeReferences(), auth_enabled=False)) as client:
+        response = client.post('/api/cases', files={'image':('opg-16bit.png', buffer.getvalue(), 'image/png')})
+        assert response.status_code == 202, response.text
+        cid = response.json()['id']
+        for _ in range(100):
+            case = client.get('/api/cases/'+cid).json()
+            if case['status'] == 'awaiting_review':
+                break
+            time.sleep(.01)
+        assert case['status'] == 'awaiting_review'
+        assert case['report']['image']['source_mode'] == 'I;16'
+        assert case['report']['image']['pixel_normalization'] == 'percentile_0.5_99.5_to_8bit'
+        with Image.open(io.BytesIO(client.get(f'/api/cases/{cid}/image').content)) as normalized:
+            low, high = normalized.getextrema()[0]
+            assert low <= 5 and high >= 250
+
+
+def test_nearly_blank_image_is_rejected_before_inference(tmp_path):
+    image = Image.new('RGB', (800, 400), 'white')
+    for x in range(280, 520):
+        image.putpixel((x, 200), (0, 0, 0))
+    buffer = io.BytesIO()
+    image.save(buffer, format='PNG')
+    with TestClient(create_app(tmp_path, FakeVision(), FakeReferences(), auth_enabled=False)) as client:
+        response = client.post('/api/cases', files={'image':('mask.png', buffer.getvalue(), 'image/png')})
+        assert response.status_code == 422
+        assert 'radiographic detail' in response.json()['detail']
+        assert client.get('/api/cases').json() == []
 
 
 def test_delete_removes_image_report_and_checkpoint(tmp_path):
