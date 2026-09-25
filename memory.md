@@ -35,3 +35,5 @@ A user-submitted panoramic PNG produced an almost-white saved case image and no 
 ## Analysis cap removed (2026-09-25)
 
 At the user's request, the three-analyses-per-account-per-day limit was removed. `app.py` no longer calls a usage reservation, `storage.py` no longer creates or writes to the usage table, and the regression test now confirms a registered account can submit four analyses in one day. The existing `analysis_usage` table in old SQLite databases is inert and is not read. The bounded GPU queue remains for concurrency control. Canonical and live-copy test suites passed 28 tests each; live app was restarted and `/login` returned 200.
+
+The first GitHub Actions run for this change exposed an existing timing-sensitive API test: a fixed one-second polling loop sometimes tried to delete a still-processing case and received HTTP 409. The test suite now waits up to ten seconds for the real asynchronous review state and fails early on workflow errors. Both canonical and live-copy suites pass locally; rerun GitHub CI after pushing this test adjustment.

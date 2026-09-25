@@ -32,16 +32,24 @@ def image_bytes():
     buf=io.BytesIO();im.save(buf,format='PNG');return buf.getvalue()
 
 
+def wait_for_review(client, case_id, timeout=10):
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        case = client.get('/api/cases/'+case_id).json()
+        if case['status'] == 'awaiting_review':
+            return case
+        assert case['status'] != 'error', case
+        time.sleep(.02)
+    raise AssertionError(f'Case did not reach review: {case}')
+
+
 def test_upload_review_resume_export_and_persistence(tmp_path):
     app=create_app(tmp_path,FakeVision(),FakeReferences(),auth_enabled=False)
     with TestClient(app) as client:
         response=client.post('/api/cases',files={'image':('opg.png',image_bytes(),'image/png')},data={'orientation':'standard'})
         assert response.status_code==202
         cid=response.json()['id']
-        for _ in range(100):
-            c=client.get('/api/cases/'+cid).json()
-            if c['status']=='awaiting_review':break
-            time.sleep(.01)
+        c=wait_for_review(client,cid)
         assert c['status']=='awaiting_review',c
         assert client.post(f'/api/cases/{cid}/finalize').status_code==409
         assert client.get(f'/api/cases/{cid}/crop/yolo26-f01').status_code==200
@@ -81,11 +89,7 @@ def test_16bit_png_is_scaled_before_detection_and_reported(tmp_path):
         response = client.post('/api/cases', files={'image':('opg-16bit.png', buffer.getvalue(), 'image/png')})
         assert response.status_code == 202, response.text
         cid = response.json()['id']
-        for _ in range(100):
-            case = client.get('/api/cases/'+cid).json()
-            if case['status'] == 'awaiting_review':
-                break
-            time.sleep(.01)
+        case = wait_for_review(client,cid)
         assert case['status'] == 'awaiting_review'
         assert case['report']['image']['source_mode'] == 'I;16'
         assert case['report']['image']['pixel_normalization'] == 'percentile_0.5_99.5_to_8bit'
@@ -110,9 +114,7 @@ def test_nearly_blank_image_is_rejected_before_inference(tmp_path):
 def test_delete_removes_image_report_and_checkpoint(tmp_path):
     with TestClient(create_app(tmp_path,FakeVision(),FakeReferences(),auth_enabled=False)) as client:
         cid=client.post('/api/cases',files={'image':('opg.png',image_bytes(),'image/png')}).json()['id']
-        for _ in range(100):
-            if client.get('/api/cases/'+cid).json()['status']=='awaiting_review':break
-            time.sleep(.01)
+        wait_for_review(client,cid)
         assert client.delete('/api/cases/'+cid).status_code==200
         assert client.get('/api/cases/'+cid).status_code==404
         assert not (tmp_path/'cases'/cid).exists()
@@ -146,10 +148,7 @@ def test_sensitivity_mode_runs_second_detector_without_third_molar(tmp_path):
         response=client.post('/api/cases',files={'image':('opg.png',image_bytes(),'image/png')},
                              data={'orientation':'standard','sensitivity':'true'})
         cid=response.json()['id']
-        for _ in range(100):
-            case=client.get('/api/cases/'+cid).json()
-            if case['status']=='awaiting_review':break
-            time.sleep(.01)
+        case=wait_for_review(client,cid)
         assert case['status']=='awaiting_review'
         assert [run['model'] for run in case['report']['model_runs']]==['enumeration','yolo26','liodon']
         assert case['options']['sensitivity'] is True
@@ -208,8 +207,6 @@ def test_account_can_analyze_more_than_three_cases_in_a_day(tmp_path):
             response = client.post('/api/cases', files={'image':('opg.png',image_bytes(),'image/png')})
             assert response.status_code == 202
             cid = response.json()['id']
-            for _ in range(100):
-                if client.get('/api/cases/'+cid).json()['status']=='awaiting_review': break
-                time.sleep(.01)
+            wait_for_review(client,cid)
             assert client.delete('/api/cases/'+cid).status_code == 200
         assert client.get('/api/cases').json() == []
