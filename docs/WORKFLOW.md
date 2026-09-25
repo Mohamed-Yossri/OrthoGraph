@@ -40,7 +40,7 @@ Python 3.12, PyTorch 2.8.0+cu128 and torchvision 0.23.0+cu128 were used on NVIDI
 ## Review workflow
 
 1. Upload a de-identified, adult permanent-dentition OPG or open the research example.
-2. Expand **Review setup**, select image orientation and adjust the provisional midline/arch separator if necessary. Imported images start with unknown orientation. No automatic left/right flip is applied.
+2. **Review setup** opens automatically when orientation is unknown. Select image orientation and adjust the provisional midline/arch separator if necessary. Imported images start with unknown orientation; the odontogram shows clearly marked candidate numbers assuming a standard display until orientation is confirmed. No automatic left/right flip is applied.
 3. Inspect the odontogram and assignment-queue chips. Select a tooth to correct its FDI number or leave it unassigned. Duplicate assignments must be resolved before confirming numbering. Geometry changes reset manual assignments; affected finding decisions must be reviewed again.
 4. Select each finding. Inspect its crop, adjust its associated tooth, add a note, then accept or reject the candidate. Acceptance is a reviewer decision within a research tool, not a certified diagnosis.
 5. Confirm orientation and numbering, then **Complete review**. Unassigned teeth can remain unresolved. Download JSON at any point; draft/reviewed status is explicit.

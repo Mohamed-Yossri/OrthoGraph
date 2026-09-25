@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const base=new URL('.',location.href);
 const apiPath=path=>new URL(path.replace(/^\//,''),base).toString();
-const state={case:null,selected:null,filter:'all',tab:'report',health:null,zoom:1,panX:0,panY:0,poll:null,busy:false,view:'welcome'};
+const state={case:null,selected:null,filter:'all',tab:'report',health:null,zoom:1,panX:0,panY:0,poll:null,busy:false,view:'welcome',setupCaseId:null,setupOpen:false};
 const statusNames={queued:'Queued',processing:'Processing',awaiting_review:'Awaiting review',reviewed:'Review complete',error:'Analysis interrupted'};
 const FDI=[...Array(4)].flatMap((_,q)=>Array.from({length:8},(_,i)=>(q+1)*10+i+1));
 let toastTimer;
@@ -33,11 +33,14 @@ function renderCase(){
   clearTimeout(state.poll);state.poll=setTimeout(async()=>{try{state.case=await api(`/api/cases/${c.id}`);renderCase();if(state.case.status==='awaiting_review')refreshCases();}catch(e){toast(e.message,true);}},900);return;
  }
  setView('workspace');const r=c.report;const done=r.status==='reviewed';
+ if(state.setupCaseId!==c.id){state.setupCaseId=c.id;state.setupOpen=!done&&r.orientation==='unknown';}
  $('caseTitle').textContent=c.name;$('caseSubtitle').textContent=`Case ${c.id.slice(0,8).toUpperCase()} · ${new Date(c.created_at).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'})} · Adult OPG`;
  $('caseStatus').textContent=statusNames[c.status];$('caseStatus').className='status-badge'+(done?' complete':'');$('exportButton').href=apiPath(`/api/cases/${c.id}/export`);
- $('reviewBanner').querySelector('strong').textContent=done?'Your research review is complete.':'Model findings are ready for your review.';
- $('bannerDetail').textContent=done?' The record preserves original predictions, corrections and unresolved assignments.':' Confirm orientation and numbering, then accept or reject each candidate.';
- $('showSetup').disabled=done;$('setupPanel').classList.toggle('hidden',done||$('setupPanel').classList.contains('hidden'));
+ const pathology=r.findings.filter(f=>f.category==='pathology').length;
+ const anatomy=r.findings.filter(f=>f.category==='anatomy').length;
+ $('reviewBanner').querySelector('strong').textContent=done?'Your research review is complete.':r.orientation==='unknown'?'Select image orientation to resolve tooth numbers.':'Review the model candidates.';
+ $('bannerDetail').textContent=done?' The record preserves original predictions, corrections and unresolved assignments.':` ${r.teeth.length} tooth candidates · ${pathology} pathology candidates · ${anatomy} anatomy observations. A missing candidate does not rule out disease.`;
+ $('showSetup').disabled=done;$('showSetup').textContent=r.orientation==='unknown'?'Set orientation ↗':'Review setup ↗';$('setupPanel').classList.toggle('hidden',done||!state.setupOpen);
  $('orientation').value=r.orientation;$('midline').value=r.guides.midline*100;$('archY').value=r.guides.arch_y*100;updateGuideValues();
  $('confirmOrientation').checked=r.orientation_confirmed;$('confirmNumbering').checked=r.numbering_confirmed;
  $('confirmOrientation').disabled=done;$('confirmNumbering').disabled=done;$('finalizeButton').disabled=done;$('finalizeButton').innerHTML=done?'✓ Review complete':'Complete review <span>→</span>';
@@ -53,7 +56,8 @@ function renderImage(){
  if(showTeeth)for(const t of r.teeth){
   const [x,y,x2,y2]=t.bbox,selected=state.selected?.id===t.id;
   const color=t.flags.includes('duplicate_fdi')?'#e8988a':'#8bccb4';
-  svg+=`<g data-region="${esc(t.id)}" data-type="tooth" tabindex="0" role="button" aria-label="Tooth ${t.fdi??t.id}"><rect x="${x}" y="${y}" width="${x2-x}" height="${y2-y}" rx="4" fill="${selected?'#68cba830':'transparent'}" stroke="${color}" stroke-width="${selected?3:1}" stroke-opacity="${selected?1:.52}" vector-effect="non-scaling-stroke"/><text x="${x+3}" y="${Math.max(15,y-6)}" fill="${color}" font-family="sans-serif" font-size="${w/95}" paint-order="stroke" stroke="#162329" stroke-width="3">${t.fdi??'?'}</text></g>`;
+  const label=t.fdi??(r.orientation==='unknown'&&t.candidate_fdi?`${t.candidate_fdi}?`:'?');
+  svg+=`<g data-region="${esc(t.id)}" data-type="tooth" tabindex="0" role="button" aria-label="Tooth ${esc(label)}"><rect x="${x}" y="${y}" width="${x2-x}" height="${y2-y}" rx="4" fill="${selected?'#68cba830':'transparent'}" stroke="${color}" stroke-width="${selected?3:1}" stroke-opacity="${selected?1:.52}" vector-effect="non-scaling-stroke"/><text x="${x+3}" y="${Math.max(15,y-6)}" fill="${color}" font-family="sans-serif" font-size="${w/95}" paint-order="stroke" stroke="#162329" stroke-width="3">${esc(label)}</text></g>`;
  }
  if(showFindings)for(const f of r.findings){
   if(f.review==='rejected')continue;const [x,y,x2,y2]=f.bbox,selected=state.selected?.id===f.id;
@@ -66,10 +70,10 @@ function toothShape(n){const type=n%10;return type>=6?'<path d="M5 4Q8 1 12 4Q16
 function renderOdontogram(){
  const r=state.case.report,selected=state.selected?.type==='tooth'?r.teeth.find(t=>t.id===state.selected.id)?.fdi:r.findings.find(f=>f.id===state.selected?.id)?.fdi;
  const rows=[[18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28],[48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38]];
- $('odontogram').innerHTML=rows.map((row,i)=>`<div class="arch-row ${i?'lower':''}">${row.map(n=>{const slot=r.odontogram[n];return `<button class="tooth-slot ${slot.status==='detected'?'detected':''} ${slot.status==='conflict'?'conflict':''} ${slot.finding_ids.length?'finding':''} ${selected===n?'selected':''}" data-fdi="${n}" title="FDI ${n}: ${slot.status.replace('_',' ')}" aria-label="FDI ${n}: ${slot.status.replace('_',' ')}"><svg viewBox="0 0 24 36">${toothShape(n)}</svg><span>${n}</span></button>`;}).join('')}</div>`).join('');
+ $('odontogram').innerHTML=rows.map((row,i)=>`<div class="arch-row ${i?'lower':''}">${row.map(n=>{const slot=r.odontogram[n],provisional=r.orientation==='unknown'&&r.teeth.some(t=>t.candidate_fdi===n);const status=provisional?'provisional if standard orientation':slot.status.replace('_',' ');return `<button class="tooth-slot ${slot.status==='detected'?'detected':''} ${slot.status==='conflict'?'conflict':''} ${slot.finding_ids.length?'finding':''} ${provisional?'provisional':''} ${selected===n?'selected':''}" data-fdi="${n}" title="FDI ${n}: ${status}" aria-label="FDI ${n}: ${status}"><svg viewBox="0 0 24 36">${toothShape(n)}</svg><span>${n}</span></button>`;}).join('')}</div>`).join('');
  const unassigned=r.teeth.filter(t=>t.fdi===null).length,conflicts=r.teeth.filter(t=>t.flags.includes('duplicate_fdi')).length;
- $('assignmentQueue').innerHTML=r.teeth.filter(t=>t.fdi===null||t.flags.includes('duplicate_fdi')).map(t=>`<button data-tooth="${t.id}">${t.fdi?'Conflict: '+t.fdi:'Unassigned'} · ${t.id}</button>`).join('');
- $('unassignedCount').textContent=`${unassigned} unassigned${conflicts?` · ${conflicts} conflicting assignments`:''}`;
+ $('assignmentQueue').innerHTML=r.orientation==='unknown'?'<p class="assignment-hint">Provisional slots assume patient right is on image left. Set the orientation above to resolve FDI identities.</p>':r.teeth.filter(t=>t.fdi===null||t.flags.includes('duplicate_fdi')).map(t=>`<button data-tooth="${t.id}">${t.fdi?'Conflict: '+t.fdi:'Unassigned'} · ${t.id}</button>`).join('');
+ $('unassignedCount').textContent=r.orientation==='unknown'?`${unassigned} provisional`: `${unassigned} unassigned${conflicts?` · ${conflicts} conflicting assignments`:''}`;
 }
 function renderFindings(){
  const r=state.case.report,findings=r.findings.filter(f=>state.filter==='all'||f.category===state.filter);
@@ -84,7 +88,7 @@ function renderInspector(){
  const item=(state.selected.type==='tooth'?r.teeth:r.findings).find(t=>t.id===state.selected.id);if(!item){state.selected=null;renderInspector();return;}
  const crop=apiPath(`/api/cases/${state.case.id}/crop/${item.id}`);
  if(state.selected.type==='tooth'){
-  $('inspector').innerHTML=`<div class="inspector-title"><h3>${item.fdi?'Tooth '+item.fdi:'Unassigned tooth'}</h3><span>${esc(item.id)}</span></div><img class="crop-image" src="${esc(crop)}" alt="Context crop for selected tooth"><div class="inspection-meta"><span>Predicted tooth type ${item.tooth_type}</span><span>Score ${Math.round(item.score*100)}%</span></div><label for="toothFdi">FDI assignment</label><select id="toothFdi" ${done?'disabled':''}>${fdiOptions(item.fdi)}</select><button class="button secondary full" id="saveTooth" style="margin-top:10px" ${done?'disabled':''}>Save tooth assignment</button>${item.flags.length?`<p class="warning-inline">${item.flags.map(esc).join(' · ').replaceAll('_',' ')}</p>`:''}<p class="vlm-note">Tooth type comes from the model. Quadrant assignment uses image geometry and requires review. Unassigned is a valid outcome.</p><div class="tooth-list">${r.teeth.filter(t=>t.fdi===item.fdi&&t.id!==item.id&&item.fdi!==null).map(t=>`<button data-tooth="${t.id}">Also assigned here: ${t.id}</button>`).join('')}</div>`;
+  $('inspector').innerHTML=`<div class="inspector-title"><h3>${item.fdi?'Tooth '+item.fdi:item.candidate_fdi&&r.orientation==='unknown'?'Provisional '+item.candidate_fdi+'?':'Unassigned tooth'}</h3><span>${esc(item.id)}</span></div><img class="crop-image" src="${esc(crop)}" alt="Context crop for selected tooth"><div class="inspection-meta"><span>Predicted tooth type ${item.tooth_type}</span><span>Score ${Math.round(item.score*100)}%</span></div><label for="toothFdi">FDI assignment</label><select id="toothFdi" ${done?'disabled':''}>${fdiOptions(item.fdi)}</select><button class="button secondary full" id="saveTooth" style="margin-top:10px" ${done?'disabled':''}>Save tooth assignment</button>${item.flags.length?`<p class="warning-inline">${item.flags.map(esc).join(' · ').replaceAll('_',' ')}</p>`:''}<p class="vlm-note">Tooth type comes from the model. Quadrant assignment uses image geometry and requires review. Unassigned is a valid outcome.</p><div class="tooth-list">${r.teeth.filter(t=>t.fdi===item.fdi&&t.id!==item.id&&item.fdi!==null).map(t=>`<button data-tooth="${t.id}">Also assigned here: ${t.id}</button>`).join('')}</div>`;
   $('saveTooth').onclick=()=>saveReview({tooth_assignments:{[item.id]:$('toothFdi').value?Number($('toothFdi').value):null}});return;
  }
  const refs=r.references.filter(ref=>item.reference_ids.includes(ref.id));
@@ -139,7 +143,7 @@ $('caseList').onclick=e=>{const b=e.target.closest('[data-case]');if(b)openCase(
 $('findingList').onclick=e=>{const b=e.target.closest('[data-finding]');if(b)select('finding',b.dataset.finding);};
 $('inspector').addEventListener('click',e=>{const b=e.target.closest('[data-tooth]');if(b)select('tooth',b.dataset.tooth);});
 $('assignmentQueue').onclick=e=>{const b=e.target.closest('[data-tooth]');if(b)select('tooth',b.dataset.tooth);};
-$('odontogram').onclick=e=>{const b=e.target.closest('[data-fdi]');if(!b)return;const r=state.case.report,slot=r.odontogram[b.dataset.fdi];if(slot.finding_ids.length)select('finding',slot.finding_ids[0]);else if(slot.tooth_ids.length)select('tooth',slot.tooth_ids[0]);else toast(`FDI ${b.dataset.fdi} was not detected. This does not confirm that the tooth is missing.`);};
+$('odontogram').onclick=e=>{const b=e.target.closest('[data-fdi]');if(!b)return;const r=state.case.report,slot=r.odontogram[b.dataset.fdi],provisional=r.orientation==='unknown'?r.teeth.find(t=>t.candidate_fdi===Number(b.dataset.fdi)):null;if(slot.finding_ids.length)select('finding',slot.finding_ids[0]);else if(slot.tooth_ids.length)select('tooth',slot.tooth_ids[0]);else if(provisional)select('tooth',provisional.id);else toast(`FDI ${b.dataset.fdi} was not detected. This does not confirm that the tooth is missing.`);};
 for(const b of document.querySelectorAll('.filter'))b.onclick=()=>{state.filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderFindings();};
 for(const b of document.querySelectorAll('.tab'))b.onclick=()=>{state.tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));for(const tab of ['report','evidence','activity'])$(tab+'Tab').classList.toggle('hidden',tab!==state.tab);};
 for(const id of ['teethLayer','findingsLayer','guidesLayer'])$(id).onchange=renderImage;
@@ -151,7 +155,7 @@ window.addEventListener('pointerup',()=>{drag=null;});
 $('imageSvg').addEventListener('click',e=>{if(moved)return;const region=e.target.closest('[data-region]');if(region)select(region.dataset.type,region.dataset.region);});
 $('imageSvg').addEventListener('keydown',e=>{if(e.key==='Enter'){const region=e.target.closest('[data-region]');if(region)select(region.dataset.type,region.dataset.region);}});
 $('imageSvg').addEventListener('wheel',e=>{e.preventDefault();state.zoom=Math.min(5,Math.max(1,state.zoom*(e.deltaY<0?1.12:1/1.12)));if(state.zoom===1)state.panX=state.panY=0;updateViewBox();},{passive:false});
-$('showSetup').onclick=()=>{$('setupPanel').classList.toggle('hidden');$('guidesLayer').checked=!$('setupPanel').classList.contains('hidden');renderImage();};
+$('showSetup').onclick=()=>{state.setupOpen=!state.setupOpen;$('setupPanel').classList.toggle('hidden',!state.setupOpen);$('guidesLayer').checked=state.setupOpen;renderImage();};
 for(const id of ['midline','archY'])$(id).oninput=()=>{updateGuideValues();$('guidesLayer').checked=true;renderImage();};
 $('saveGuides').onclick=()=>saveReview({orientation:$('orientation').value,midline:Number($('midline').value)/100,arch_y:Number($('archY').value)/100});
 $('confirmOrientation').onchange=()=>saveReview({orientation_confirmed:$('confirmOrientation').checked});$('confirmNumbering').onchange=()=>saveReview({numbering_confirmed:$('confirmNumbering').checked});
